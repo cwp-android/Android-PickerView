@@ -40,8 +40,8 @@ public class TimePickerView extends BasePickerView implements View.OnClickListen
         initAnim();
 
         if (mPickerOptions.customListener == null) {
-            LayoutInflater.from(context).inflate(R.layout.pickerview_time, contentContainer);
-
+            LayoutInflater.from(context).inflate(mPickerOptions.buildType == PickerOptions.TYPE_PICKER_TIME_EN ?
+                    R.layout.pickerview_time_en : R.layout.pickerview_time, contentContainer);
             //顶部标题
             TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
             RelativeLayout rv_top_bar = (RelativeLayout) findViewById(R.id.rv_topbar);
@@ -129,6 +129,7 @@ public class TimePickerView extends BasePickerView implements View.OnClickListen
         }
 
         setTime();
+        wheelTime.setMonthReplaceCallback(mPickerOptions.monthReplaceCallback);
         wheelTime.setLabels(mPickerOptions.label_year, mPickerOptions.label_month, mPickerOptions.label_day
                 , mPickerOptions.label_hours, mPickerOptions.label_minutes, mPickerOptions.label_seconds);
         wheelTime.setTextXOffset(mPickerOptions.x_offset_year, mPickerOptions.x_offset_month, mPickerOptions.x_offset_day,

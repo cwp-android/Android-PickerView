@@ -126,6 +126,18 @@ public class WheelView extends View {
 
     private final float DEFAULT_TEXT_TARGET_SKEW_X = 0.5f;
 
+    private boolean isMonth;
+
+    private MonthReplaceCallback mMonthReplaceCallback;
+
+    public void setMonthReplaceCallback(MonthReplaceCallback monthReplaceCallback) {
+        mMonthReplaceCallback = monthReplaceCallback;
+    }
+
+    public interface MonthReplaceCallback {
+        String onMonthReplace(String month);
+    }
+
     public WheelView(Context context) {
         this(context, null);
     }
@@ -160,7 +172,8 @@ public class WheelView extends View {
             lineSpacingMultiplier = a.getFloat(R.styleable.pickerview_wheelview_lineSpacingMultiplier, lineSpacingMultiplier);
             a.recycle();//回收内存
         }
-
+        String viewIdName = getResources().getResourceEntryName(getId());
+        isMonth = TextUtils.equals("month", viewIdName);
         judgeLineSpace();
         initLoopView(context);
     }
@@ -248,7 +261,6 @@ public class WheelView extends View {
         for (int i = 0; i < adapter.getItemsCount(); i++) {
             String s1 = getContentText(adapter.getItem(i));
             paintCenterText.getTextBounds(s1, 0, s1.length(), rect);
-
             int textWidth = rect.width();
             if (textWidth > maxTextWidth) {
                 maxTextWidth = textWidth;
@@ -257,6 +269,13 @@ public class WheelView extends View {
         paintCenterText.getTextBounds("\u661F\u671F", 0, 2, rect); // 星期的字符编码（以它为标准高度）
         maxTextHeight = rect.height() + 2;
         itemHeight = lineSpacingMultiplier * maxTextHeight;
+    }
+
+    private String replaceMonth(String month) {
+        if (mMonthReplaceCallback != null) {
+            return mMonthReplaceCallback.onMonthReplace(month);
+        }
+        return month;
     }
 
     public void smoothScroll(ACTION action) {//平滑滚动的实现
@@ -407,7 +426,6 @@ public class WheelView extends View {
             } else {
                 visibles[counter] = adapter.getItem(index);
             }
-
             counter++;
 
         }
@@ -576,7 +594,7 @@ public class WheelView extends View {
             return ((IPickerViewData) item).getPickerViewText();
         } else if (item instanceof Integer) {
             //如果为整形则最少保留两位数.
-            return getFixNum((int) item);
+            return isMonth ? replaceMonth(getFixNum((int) item)) : getFixNum((int) item);
         }
         return item.toString();
     }

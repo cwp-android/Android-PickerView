@@ -23,6 +23,12 @@ public class TimePickerBuilder {
     private PickerOptions mPickerOptions;
 
     //Required
+    public TimePickerBuilder(Context context, int buildType, OnTimeSelectListener listener) {
+        mPickerOptions = new PickerOptions(buildType);
+        mPickerOptions.context = context;
+        mPickerOptions.timeSelectListener = listener;
+    }
+
     public TimePickerBuilder(Context context, OnTimeSelectListener listener) {
         mPickerOptions = new PickerOptions(PickerOptions.TYPE_PICKER_TIME);
         mPickerOptions.context = context;
@@ -241,6 +247,15 @@ public class TimePickerBuilder {
         return this;
     }
 
+    public TimePickerBuilder setNotShowLabel() {
+        mPickerOptions.label_year = "";
+        mPickerOptions.label_month = "";
+        mPickerOptions.label_day = "";
+        mPickerOptions.label_hours = "";
+        mPickerOptions.label_minutes = "";
+        mPickerOptions.label_seconds = "";
+        return this;
+    }
 
     public TimePickerBuilder setLabel(String label_year, String label_month, String label_day, String label_hours, String label_mins, String label_seconds) {
         mPickerOptions.label_year = label_year;
@@ -285,6 +300,11 @@ public class TimePickerBuilder {
      */
     public TimePickerBuilder setTimeSelectChangeListener(OnTimeSelectChangeListener listener) {
         mPickerOptions.timeSelectChangeListener = listener;
+        return this;
+    }
+
+    public TimePickerBuilder setMonthReplaceCallback(WheelView.MonthReplaceCallback callback) {
+        mPickerOptions.monthReplaceCallback = callback;
         return this;
     }
 

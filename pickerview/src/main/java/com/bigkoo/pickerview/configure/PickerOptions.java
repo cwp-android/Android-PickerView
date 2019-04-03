@@ -31,6 +31,9 @@ public class PickerOptions {
 
     public static final int TYPE_PICKER_OPTIONS = 1;
     public static final int TYPE_PICKER_TIME = 2;
+    public static final int TYPE_PICKER_TIME_EN = 3;
+
+    public int buildType;//时间选择器类型
 
     public OnOptionsSelectListener optionsSelectListener;
     public OnTimeSelectListener timeSelectListener;
@@ -38,6 +41,7 @@ public class PickerOptions {
 
     public OnTimeSelectChangeListener timeSelectChangeListener;
     public OnOptionsSelectChangeListener optionsSelectChangeListener;
+    public WheelView.MonthReplaceCallback monthReplaceCallback;
     public CustomListener customListener;
 
 
@@ -75,6 +79,7 @@ public class PickerOptions {
         } else {
             layoutRes = R.layout.pickerview_time;
         }
+        this.buildType = buildType;
     }
 
     //******* general field ******//

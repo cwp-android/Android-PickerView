@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.configure.PickerOptions;
 import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
@@ -30,6 +32,7 @@ import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerviewdemo.bean.CardBean;
 import com.bigkoo.pickerviewdemo.bean.ProvinceBean;
+import com.contrarywind.view.WheelView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<ProvinceBean> options1Items = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
+    private final String[] months = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+    private final String[] monthsEn = {"January", "February","March","April","May","June","July"
+            ,"August","September","October","November", "December"};
 
     private Button btn_Options;
     private Button btn_CustomOptions;
@@ -92,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.btn_Time && pvTime != null) {
             // pvTime.setDate(Calendar.getInstance());
-           /* pvTime.show(); //show timePicker*/
+            /* pvTime.show(); //show timePicker*/
             pvTime.show(v);//弹出时间选择器，传递参数过去，回调的时候则可以绑定此view
         } else if (v.getId() == R.id.btn_Options && pvOptions != null) {
             pvOptions.show(); //弹出条件选择器
@@ -190,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initTimePicker() {//Dialog 模式下，在底部弹出
 
-        pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
+        pvTime = new TimePickerBuilder(this, PickerOptions.TYPE_PICKER_TIME_EN,new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
                 Toast.makeText(MainActivity.this, getTime(date), Toast.LENGTH_SHORT).show();
@@ -204,8 +210,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.i("pvTime", "onTimeSelectChanged");
                     }
                 })
-                .setType(new boolean[]{true, true, true, true, true, true})
-                .isDialog(true) //默认设置false ，内部实现将DecorView 作为它的父控件。
+                .setMonthReplaceCallback(new WheelView.MonthReplaceCallback() {
+                    @Override
+                    public String onMonthReplace(String month) {
+                        for (int i = 0; i <months.length ; i++) {
+                            if (TextUtils.equals(month, months[i])) {
+                                return monthsEn[i];
+                            }
+                        }
+                        return month;
+                    }
+                })
+                .setNotShowLabel()
+                .isCyclic(true)
+                .setType(new boolean[]{true, true, true, false, false, false})
+//                .isDialog(true) //默认设置false ，内部实现将DecorView 作为它的父控件。
                 .addOnCancelClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -253,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Calendar endDate = Calendar.getInstance();
         endDate.set(2027, 2, 28);
         //时间选择器 ，自定义布局
-        pvCustomTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
+        pvCustomTime = new TimePickerBuilder(this,new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 btn_CustomTime.setText(getTime(date));
@@ -273,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setBgColor(Color.BLACK)//滚轮背景颜色 Night mode
                 .setSubmitColor(Color.WHITE)
                 .setCancelColor(Color.WHITE)*/
-               /*.animGravity(Gravity.RIGHT)// default is center*/
+                /*.animGravity(Gravity.RIGHT)// default is center*/
                 .setDate(selectedDate)
                 .setRangDate(startDate, endDate)
                 .setLayoutRes(R.layout.pickerview_custom_time, new CustomListener() {
@@ -321,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //返回的分别是三个级别的选中位置
                 String tx = options1Items.get(options1).getPickerViewText()
                         + options2Items.get(options1).get(options2)
-                       /* + options3Items.get(options1).get(options2).get(options3).getPickerViewText()*/;
+                        /* + options3Items.get(options1).get(options2).get(options3).getPickerViewText()*/;
                 btn_Options.setText(tx);
             }
         })

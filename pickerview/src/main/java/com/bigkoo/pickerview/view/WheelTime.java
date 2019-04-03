@@ -108,14 +108,14 @@ public class WheelTime {
         wv_month = (WheelView) view.findViewById(R.id.month);
         wv_month.setAdapter(new ArrayWheelAdapter(ChinaDate.getMonths(year)));
         wv_month.setLabel("");
-        
+
         int leapMonth = ChinaDate.leapMonth(year);
         if (leapMonth != 0 && (month > leapMonth - 1 || isLeap)) { //选中月是闰月或大于闰月
             wv_month.setCurrentItem(month + 1);
         } else {
             wv_month.setCurrentItem(month);
         }
-        
+
         wv_month.setGravity(gravity);
 
         // 日
@@ -644,6 +644,10 @@ public class WheelTime {
         wv_hours.setLineSpacingMultiplier(lineSpacingMultiplier);
         wv_minutes.setLineSpacingMultiplier(lineSpacingMultiplier);
         wv_seconds.setLineSpacingMultiplier(lineSpacingMultiplier);
+    }
+
+    public void setMonthReplaceCallback(WheelView.MonthReplaceCallback monthReplaceCallback) {
+        wv_month.setMonthReplaceCallback(monthReplaceCallback);
     }
 
     public void setLabels(String label_year, String label_month, String label_day, String label_hours, String label_mins, String label_seconds) {
